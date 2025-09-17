@@ -661,14 +661,14 @@ function ProducerReports({ tab }: { tab: 'reports'|'deliverables'|'activitylog'|
 }
 
 // --- PreLogin, Auth, Signup ---
-function SignUpScreen({ onBack, onSuccess }: { onBack: () => void; onSuccess: () => void }) {
+function SignUpScreen({ onBack, onSuccess }: { onBack: () => void; onSuccess: (role: 'producer'|'director'|'crew') => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('producer');
+  const [role, setRole] = useState<'producer'|'director'|'crew'>('producer');
   function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
     if (email && password) {
-      onSuccess();
+      onSuccess(role);
     }
   }
   return (
@@ -699,7 +699,7 @@ function SignUpScreen({ onBack, onSuccess }: { onBack: () => void; onSuccess: ()
           </div>
           <div>
             <label className="block text-slate-200 font-semibold mb-1">Role</label>
-            <select className="w-full rounded border border-[#2a3246] bg-[#101726] px-3 py-2 text-slate-200" value={role} onChange={e => setRole(e.target.value)}>
+            <select className="w-full rounded border border-[#2a3246] bg-[#101726] px-3 py-2 text-slate-200" value={role} onChange={e => setRole(e.target.value as 'producer'|'director'|'crew')}>
               <option value="producer">Producer</option>
               <option value="director">Director</option>
               <option value="crew">Crew Member</option>
@@ -924,7 +924,7 @@ function CineTrackApp() {
     />;
   }
   if (screen === 'signup') {
-    return <SignUpScreen onBack={() => setScreen('login')} onSuccess={() => { setScreen('main'); setStep('dashboard'); }} />;
+    return <SignUpScreen onBack={() => setScreen('login')} onSuccess={(role) => { setSelectedRole(role); setScreen('main'); setStep('dashboard'); }} />;
   }
 
   // Main app shell (only if logged in)
