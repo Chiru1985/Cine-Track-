@@ -89,7 +89,7 @@ function ProductionCalendarPage() {
 
 // --- Crew Tabs ---
 function CrewTabs() {
-  const departments = [
+  const initialDepartments = [
     { key: 'direction', label: 'Direction', crew: [
       { name: 'Anna Svensson', role: 'Director', img: 'https://randomuser.me/api/portraits/women/44.jpg' },
       { name: 'Erik Johansson', role: 'Assistant Director', img: 'https://randomuser.me/api/portraits/men/45.jpg' },
@@ -112,8 +112,53 @@ function CrewTabs() {
       { name: 'Jonas Berg', role: 'Supporting Actor', img: 'https://randomuser.me/api/portraits/men/54.jpg' },
     ]},
   ];
+  const [departments, setDepartments] = useState(initialDepartments);
   const [tab, setTab] = useState(departments[0].key);
   const current = departments.find(d => d.key === tab);
+
+  // Add Member Modal State
+  const [showAdd, setShowAdd] = useState(false);
+  const [addForm, setAddForm] = useState({
+    name: '',
+    role: '',
+    department: departments[0].key,
+    img: '',
+    imgFile: null as File | null,
+  });
+  const [imgPreview, setImgPreview] = useState<string | null>(null);
+
+  // Handle image upload preview
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      setAddForm(f => ({ ...f, imgFile: file }));
+      const reader = new FileReader();
+      reader.onloadend = () => setImgPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Handle add form field changes
+  function handleAddFormChange(e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) {
+    const { name, value } = e.target;
+    setAddForm(f => ({ ...f, [name]: value }));
+  }
+
+  // Add member to department
+  function handleAddMember(e: React.FormEvent) {
+    e.preventDefault();
+    if (!addForm.name || !addForm.role || !addForm.department) return;
+    const imgUrl = imgPreview || 'https://randomuser.me/api/portraits/lego/1.jpg';
+    setDepartments(depts => depts.map(d =>
+      d.key === addForm.department
+        ? { ...d, crew: [...d.crew, { name: addForm.name, role: addForm.role, img: imgUrl }] }
+        : d
+    ));
+    setShowAdd(false);
+    setAddForm({ name: '', role: '', department: departments[0].key, img: '', imgFile: null });
+    setImgPreview(null);
+  }
+
   return (
     <div>
       <div className="flex gap-2 mb-6">
@@ -126,7 +171,67 @@ function CrewTabs() {
             {d.label}
           </button>
         ))}
+        <button
+          className="ml-auto bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded flex items-center gap-2"
+          onClick={() => setShowAdd(true)}
+        >
+          <span className="material-symbols-outlined">person_add</span> Add Member
+        </button>
       </div>
+
+      {/* Add Member Modal */}
+      {showAdd && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-slate-900 rounded-lg p-8 w-full max-w-md shadow-lg relative">
+            <button className="absolute top-2 right-2 text-slate-400 hover:text-white" onClick={()=>setShowAdd(false)}><span className="material-symbols-outlined">close</span></button>
+            <h3 className="text-xl font-bold mb-4">Add Cast or Crew Member</h3>
+            <form className="flex flex-col gap-4" onSubmit={handleAddMember}>
+              <div className="flex flex-col items-center">
+                <label htmlFor="imgUpload" className="cursor-pointer">
+                  <div className="w-20 h-20 rounded-full bg-slate-700 flex items-center justify-center mb-2 border-2 border-blue-400 overflow-hidden">
+                    {imgPreview ? (
+                      <img src={imgPreview} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="material-symbols-outlined text-4xl text-slate-400">person</span>
+                    )}
+                  </div>
+                  <input id="imgUpload" name="img" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                </label>
+                <span className="text-xs text-slate-400">Upload Photo</span>
+              </div>
+              <input className="rounded border border-slate-700 bg-slate-800 px-3 py-2 text-slate-200" name="name" value={addForm.name} onChange={handleAddFormChange} placeholder="Full Name" />
+              <select className="rounded border border-slate-700 bg-slate-800 px-3 py-2 text-slate-200" name="department" value={addForm.department} onChange={handleAddFormChange}>
+                {departments.map(d => <option key={d.key} value={d.key}>{d.label}</option>)}
+              </select>
+              <select className="rounded border border-slate-700 bg-slate-800 px-3 py-2 text-slate-200" name="role" value={addForm.role} onChange={handleAddFormChange}>
+                <option value="">Select Role</option>
+                <option value="Director">Director</option>
+                <option value="Assistant Director">Assistant Director</option>
+                <option value="Cinematographer">Cinematographer</option>
+                <option value="Camera Assistant">Camera Assistant</option>
+                <option value="Gaffer">Gaffer</option>
+                <option value="Best Boy">Best Boy</option>
+                <option value="Sound Engineer">Sound Engineer</option>
+                <option value="Actor">Actor</option>
+                <option value="Actress">Actress</option>
+                <option value="Supporting Actor">Supporting Actor</option>
+                <option value="Supporting Actress">Supporting Actress</option>
+                <option value="Lead Actor">Lead Actor</option>
+                <option value="Lead Actress">Lead Actress</option>
+                <option value="">Other (type below)</option>
+              </select>
+              {addForm.role === '' && (
+                <input className="rounded border border-slate-700 bg-slate-800 px-3 py-2 text-slate-200 mt-2" name="role" value={addForm.role} onChange={handleAddFormChange} placeholder="Custom Role (e.g. Stunt Coordinator)" />
+              )}
+              <div className="flex gap-2 justify-end">
+                <button type="button" className="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded" onClick={()=>setShowAdd(false)}>Cancel</button>
+                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold">Add</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {current && current.crew.map(member => (
           <div key={member.name} className="rounded-lg border border-slate-700 bg-slate-800/60 p-4 flex flex-col items-center">
