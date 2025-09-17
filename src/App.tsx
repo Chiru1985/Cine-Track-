@@ -1036,28 +1036,30 @@ function CineTrackApp() {
   return (
     <div className="min-h-screen bg-[#0f172a] text-white flex flex-col">
       <Header active={step} onLogo={() => setStep('dashboard')} onNav={k => setStep(k as Step)} onLogout={handleLogout} visibleTabs={visibleTabs} />
-      {/* Budget sidebar navigation */}
+      {/* Responsive main content */}
       {step === 'budget' ? (
-        <div className="flex flex-1">
-          <aside className="w-48 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col py-8 px-2">
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${budgetTab==='budget' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setBudgetTab('budget' as any)}
-            >
-              Budget Overview
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${budgetTab==='expenses' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setBudgetTab('expenses' as any)}
-            >
-              Expenses
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left ${budgetTab==='vendors' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setBudgetTab('vendors' as any)}
-            >
-              Vendors
-            </button>
+        <div className="flex flex-col md:flex-row flex-1">
+          <aside className="w-full md:w-56 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex md:flex-col flex-row py-2 md:py-8 px-2 gap-2 md:gap-0">
+            <div className="flex md:flex-col w-full">
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${budgetTab==='budget' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setBudgetTab('budget' as any)}
+              >
+                Budget Overview
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${budgetTab==='expenses' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setBudgetTab('expenses' as any)}
+              >
+                Expenses
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left ${budgetTab==='vendors' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setBudgetTab('vendors' as any)}
+              >
+                Vendors
+              </button>
+            </div>
           </aside>
           <main className="flex-1">
             {budgetTab === 'budget' && <ProducerBudget />}
@@ -1066,32 +1068,34 @@ function CineTrackApp() {
           </main>
         </div>
       ) : step === 'story' ? (
-        <div className="flex flex-1">
-          <aside className="w-48 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col py-8 px-2">
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${storyTab==='story' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setStoryTab('story')}
-            >
-              Story & Script
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${storyTab==='scripts' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setStoryTab('scripts')}
-            >
-              Scripts
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${storyTab==='postproduction' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setStoryTab('postproduction')}
-            >
-              Post-Production
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left ${storyTab==='locations' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setStoryTab('locations')}
-            >
-              Locations
-            </button>
+        <div className="flex flex-col md:flex-row flex-1">
+          <aside className="w-full md:w-56 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex md:flex-col flex-row py-2 md:py-8 px-2 gap-2 md:gap-0">
+            <div className="flex md:flex-col w-full">
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${storyTab==='story' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setStoryTab('story')}
+              >
+                Story & Script
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${storyTab==='scripts' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setStoryTab('scripts')}
+              >
+                Scripts
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${storyTab==='postproduction' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setStoryTab('postproduction')}
+              >
+                Post-Production
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left ${storyTab==='locations' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setStoryTab('locations')}
+              >
+                Locations
+              </button>
+            </div>
           </aside>
           <main className="flex-1">
             {storyTab === 'story' && <ProducerStoryScript />}
@@ -1105,20 +1109,22 @@ function CineTrackApp() {
       ) : step === 'remuneration' ? (
         <ProducerRemuneration />
       ) : step === 'schedule' ? (
-        <div className="flex flex-1">
-          <aside className="w-48 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col py-8 px-2">
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${scheduleTab==='calendar' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setScheduleTab('calendar')}
-            >
-              Production Calendar
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${scheduleTab==='other' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setScheduleTab('other')}
-            >
-              Other
-            </button>
+        <div className="flex flex-col md:flex-row flex-1">
+          <aside className="w-full md:w-56 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex md:flex-col flex-row py-2 md:py-8 px-2 gap-2 md:gap-0">
+            <div className="flex md:flex-col w-full">
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${scheduleTab==='calendar' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setScheduleTab('calendar')}
+              >
+                Production Calendar
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left ${scheduleTab==='other' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setScheduleTab('other')}
+              >
+                Other
+              </button>
+            </div>
           </aside>
           <main className="flex-1">
             {scheduleTab === 'calendar' && <ProductionCalendarPage />}
@@ -1126,38 +1132,40 @@ function CineTrackApp() {
           </main>
         </div>
       ) : step === 'reports' ? (
-        <div className="flex flex-1">
-          <aside className="w-48 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col py-8 px-2">
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${reportsTab==='reports' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setReportsTab('reports')}
-            >
-              Reports
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${reportsTab==='deliverables' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setReportsTab('deliverables')}
-            >
-              Deliverables
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${reportsTab==='activitylog' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setReportsTab('activitylog')}
-            >
-              User Activity
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${reportsTab==='notifications' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setReportsTab('notifications')}
-            >
-              Notifications
-            </button>
-            <button
-              className={`w-full px-4 py-2 rounded font-semibold text-left ${reportsTab==='compliance' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
-              onClick={()=>setReportsTab('compliance')}
-            >
-              Compliance
-            </button>
+        <div className="flex flex-col md:flex-row flex-1">
+          <aside className="w-full md:w-56 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex md:flex-col flex-row py-2 md:py-8 px-2 gap-2 md:gap-0">
+            <div className="flex md:flex-col w-full">
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${reportsTab==='reports' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setReportsTab('reports')}
+              >
+                Reports
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${reportsTab==='deliverables' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setReportsTab('deliverables')}
+              >
+                Deliverables
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${reportsTab==='activitylog' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setReportsTab('activitylog')}
+              >
+                User Activity
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left mb-2 md:mb-2 ${reportsTab==='notifications' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setReportsTab('notifications')}
+              >
+                Notifications
+              </button>
+              <button
+                className={`w-full px-4 py-3 rounded font-semibold text-left ${reportsTab==='compliance' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+                onClick={()=>setReportsTab('compliance')}
+              >
+                Compliance
+              </button>
+            </div>
           </aside>
           <main className="flex-1">
             {(reportsTab === 'reports' || reportsTab === 'deliverables' || reportsTab === 'activitylog' || reportsTab === 'notifications') && <ProducerReports tab={reportsTab as 'reports'|'deliverables'|'activitylog'|'notifications'} />}
