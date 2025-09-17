@@ -601,10 +601,18 @@ function ProducerScheduleCalendar() {
 }
 
 import DeliverablesPage from './pages/Deliverables';
+import ActivityLogPage from './pages/ActivityLog';
+import NotificationsPage from './pages/Notifications';
 
-function ProducerReports({ tab }: { tab: 'reports'|'deliverables' }) {
+function ProducerReports({ tab }: { tab: 'reports'|'deliverables'|'activitylog'|'notifications' }) {
   if (tab === 'deliverables') {
     return <DeliverablesPage />;
+  }
+  if (tab === 'activitylog') {
+    return <ActivityLogPage />;
+  }
+  if (tab === 'notifications') {
+    return <NotificationsPage />;
   }
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
@@ -881,7 +889,7 @@ function CineTrackApp() {
   // Schedule sub-tabs
   const [scheduleTab, setScheduleTab] = useState<'calendar'|'other'>('calendar');
   // Reports sub-tabs
-  const [reportsTab, setReportsTab] = useState<'reports'|'deliverables'|'compliance'>('reports');
+  const [reportsTab, setReportsTab] = useState<'reports'|'deliverables'|'activitylog'|'notifications'|'compliance'>('reports');
 
   const handleLogout = () => {
     setScreen('prelogin');
@@ -1012,6 +1020,18 @@ function CineTrackApp() {
               Deliverables
             </button>
             <button
+              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${reportsTab==='activitylog' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+              onClick={()=>setReportsTab('activitylog')}
+            >
+              User Activity
+            </button>
+            <button
+              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${reportsTab==='notifications' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+              onClick={()=>setReportsTab('notifications')}
+            >
+              Notifications
+            </button>
+            <button
               className={`w-full px-4 py-2 rounded font-semibold text-left ${reportsTab==='compliance' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
               onClick={()=>setReportsTab('compliance')}
             >
@@ -1019,7 +1039,7 @@ function CineTrackApp() {
             </button>
           </aside>
           <main className="flex-1">
-            {(reportsTab === 'reports' || reportsTab === 'deliverables') && <ProducerReports tab={reportsTab as 'reports'|'deliverables'} />}
+            {(reportsTab === 'reports' || reportsTab === 'deliverables' || reportsTab === 'activitylog' || reportsTab === 'notifications') && <ProducerReports tab={reportsTab as 'reports'|'deliverables'|'activitylog'|'notifications'} />}
             {reportsTab === 'compliance' && <CompliancePage />}
           </main>
         </div>
