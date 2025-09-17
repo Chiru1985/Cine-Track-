@@ -600,7 +600,12 @@ function ProducerScheduleCalendar() {
   );
 }
 
-function ProducerReports() {
+import DeliverablesPage from './pages/Deliverables';
+
+function ProducerReports({ tab }: { tab: 'reports'|'deliverables' }) {
+  if (tab === 'deliverables') {
+    return <DeliverablesPage />;
+  }
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <h1 className="text-3xl font-extrabold mb-2">Reports</h1>
@@ -876,7 +881,7 @@ function CineTrackApp() {
   // Schedule sub-tabs
   const [scheduleTab, setScheduleTab] = useState<'calendar'|'other'>('calendar');
   // Reports sub-tabs
-  const [reportsTab, setReportsTab] = useState<'reports'|'compliance'>('reports');
+  const [reportsTab, setReportsTab] = useState<'reports'|'deliverables'|'compliance'>('reports');
 
   const handleLogout = () => {
     setScreen('prelogin');
@@ -1001,6 +1006,12 @@ function CineTrackApp() {
               Reports
             </button>
             <button
+              className={`w-full px-4 py-2 rounded font-semibold text-left mb-2 ${reportsTab==='deliverables' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
+              onClick={()=>setReportsTab('deliverables')}
+            >
+              Deliverables
+            </button>
+            <button
               className={`w-full px-4 py-2 rounded font-semibold text-left ${reportsTab==='compliance' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200 hover:bg-slate-600'}`}
               onClick={()=>setReportsTab('compliance')}
             >
@@ -1008,7 +1019,7 @@ function CineTrackApp() {
             </button>
           </aside>
           <main className="flex-1">
-            {reportsTab === 'reports' && <ProducerReports />}
+            {(reportsTab === 'reports' || reportsTab === 'deliverables') && <ProducerReports tab={reportsTab as 'reports'|'deliverables'} />}
             {reportsTab === 'compliance' && <CompliancePage />}
           </main>
         </div>
