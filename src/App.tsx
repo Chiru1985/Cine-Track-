@@ -715,8 +715,8 @@ function SignUpScreen({ onBack, onSuccess }: { onBack: () => void; onSuccess: ()
   );
 }
 
-function PreLoginLanding({ onStart }: { onStart: () => void }) {
-  const [selected, setSelected] = useState<string | null>(null);
+function PreLoginLanding({ onStart }: { onStart: (role: 'producer'|'director'|'crew') => void }) {
+  const [selected, setSelected] = useState<'producer'|'director'|'crew'|null>(null);
   const roles = [
     {
       key: 'producer',
@@ -745,7 +745,7 @@ function PreLoginLanding({ onStart }: { onStart: () => void }) {
               key={role.key}
               type="button"
               className={`rounded-xl border p-4 flex items-center justify-between transition group focus:outline-none text-left ${selected === role.key ? 'border-blue-400 bg-blue-900/40' : 'border-[#2a3246] bg-[#151d2e] hover:border-blue-400'}`}
-              onClick={() => setSelected(role.key)}
+              onClick={() => setSelected(role.key as 'producer'|'director'|'crew')}
             >
               <div className="text-left">
                 <div className="text-white text-lg font-bold mb-1">{role.label}</div>
@@ -759,7 +759,7 @@ function PreLoginLanding({ onStart }: { onStart: () => void }) {
         </div>
         <button
           className={`mt-8 w-full max-w-xs bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg text-base ${!selected ? 'opacity-50 cursor-not-allowed' : ''}`}
-          onClick={() => selected && onStart()}
+          onClick={() => selected && onStart(selected)}
           disabled={!selected}
         >
           Continue
@@ -849,7 +849,7 @@ function ProducerAuth({ role, onBack, onSuccess, onSignUp }: { role: string; onB
 }
 
 // --- Header ---
-function Header({ active, onLogo, onNav, onLogout }: { active: string; onLogo: () => void; onNav: (k: string) => void; onLogout: () => void }) {
+function Header({ active, onLogo, onNav, onLogout, visibleTabs }: { active: string; onLogo: () => void; onNav: (k: string) => void; onLogout: () => void; visibleTabs?: string[] }) {
   const nav = [
     { key: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
     { key: 'budget', icon: 'bar_chart', label: 'Budget' },
@@ -859,12 +859,13 @@ function Header({ active, onLogo, onNav, onLogout }: { active: string; onLogo: (
     { key: 'reports', icon: 'assessment', label: 'Reports' },
     { key: 'people', icon: 'groups', label: 'Crew' },
   ];
+  const filteredNav = visibleTabs ? nav.filter(n => visibleTabs.includes(n.key)) : nav;
   return (
     <header className="flex items-center gap-8 px-8 py-4 bg-[#181f2a] border-b border-slate-800 justify-between">
       <div className="flex items-center gap-8">
         <button onClick={onLogo} className="flex items-center gap-2 text-xl font-bold text-white"><span className="text-2xl">✦</span> CineTrack</button>
         <nav className="flex gap-2">
-          {nav.map(n => (
+          {filteredNav.map(n => (
             <button key={n.key} onClick={() => onNav(n.key)} className={`flex items-center gap-2 px-4 py-2 rounded ${active === n.key ? 'bg-blue-600 text-white font-semibold' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`}><span className="material-symbols-outlined text-[20px]">{n.icon}</span> {n.label}</button>
           ))}
         </nav>
@@ -881,6 +882,7 @@ function CineTrackApp() {
   type Step = 'dashboard'|'budget'|'remuneration'|'story'|'schedule'|'reports'|'people';
   const [step, setStep] = useState<Step>('dashboard');
   const [screen, setScreen] = useState<'prelogin'|'login'|'signup'|'main'>('prelogin');
+  const [selectedRole, setSelectedRole] = useState<'producer'|'director'|'crew'|null>(null);
 
   // Budget sub-tabs
   const [budgetTab, setBudgetTab] = useState<'budget' | 'expenses' | 'vendors'>('budget');
@@ -891,18 +893,32 @@ function CineTrackApp() {
   // Reports sub-tabs
   const [reportsTab, setReportsTab] = useState<'reports'|'deliverables'|'activitylog'|'notifications'|'compliance'>('reports');
 
+  // Role-based tab filtering
+  const getVisibleTabs = () => {
+    if (selectedRole === 'producer') {
+      return ['dashboard','budget','remuneration','story','schedule','reports','people'];
+    } else if (selectedRole === 'director') {
+      return ['dashboard','story','schedule','reports','people'];
+    } else if (selectedRole === 'crew') {
+      return ['story','schedule','people'];
+    }
+    return [];
+  };
+  const visibleTabs = getVisibleTabs();
+
   const handleLogout = () => {
     setScreen('prelogin');
     setStep('dashboard');
+    setSelectedRole(null);
   };
 
   if (screen === 'prelogin') {
-    return <PreLoginLanding onStart={() => setScreen('login')} />;
+    return <PreLoginLanding onStart={(role: 'producer'|'director'|'crew') => { setSelectedRole(role); setScreen('login'); }} />;
   }
   if (screen === 'login') {
     return <ProducerAuth
-      role="producer"
-      onBack={() => setScreen('prelogin')}
+      role={selectedRole || 'producer'}
+      onBack={() => { setScreen('prelogin'); setSelectedRole(null); }}
       onSuccess={() => { setScreen('main'); setStep('dashboard'); }}
       onSignUp={() => setScreen('signup')}
     />;
@@ -914,7 +930,7 @@ function CineTrackApp() {
   // Main app shell (only if logged in)
   return (
     <div className="min-h-screen bg-[#0f172a] text-white flex flex-col">
-      <Header active={step} onLogo={() => setStep('dashboard')} onNav={k => setStep(k as Step)} onLogout={handleLogout} />
+      <Header active={step} onLogo={() => setStep('dashboard')} onNav={k => setStep(k as Step)} onLogout={handleLogout} visibleTabs={visibleTabs} />
       {/* Budget sidebar navigation */}
       {step === 'budget' ? (
         <div className="flex flex-1">
